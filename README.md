@@ -1,1 +1,1 @@
-# prederator-prey-simulator
+# Prederator-Prey simulator
