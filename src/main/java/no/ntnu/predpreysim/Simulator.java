@@ -127,14 +127,6 @@ public class Simulator {
             }
         }
 
-//        actors.removeIf(actor -> !actor.isActive());
-
-        int count = 0;
-        for (int i = 0; i < actors.size(); i++) {
-            if (actors.get(i) == null) count++;
-        }
-        System.out.println(count);
-
         // Add the newly born foxes and rabbits to the main lists.
         actors.addAll(newActor);
 

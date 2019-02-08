@@ -15,11 +15,11 @@ public class PopulationGenerator
     // The probability that a fox will be created in any given grid position.
     private static final double FOX_CREATION_PROBABILITY = 0.02;
     // The probability that a rabbit will be created in any given grid position.
-    private static final double RABBIT_CREATION_PROBABILITY = 0.08;
+    private static final double RABBIT_CREATION_PROBABILITY = 0.18;
     // The probability that a hunter will be created in any given grid position.
     private static final double HUNTER_CREATION_PROBABILITY = 0.01;
     // The probability that a hunter will be created in any given grid position.
-    private static final double GRASS_CREATION_PROBABILITY = 0.01;
+    private static final double GRASS_CREATION_PROBABILITY = 0.15;
     /**
      * Constructor for objects of class PopulationGenerator
      * @param view The visualization.
@@ -49,21 +49,25 @@ public class PopulationGenerator
                     Actor fox = new Fox(true, field, location);
                     actors.add(fox);
                 }
-                else if(rand.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col, 1);
+
+                if(rand.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col, 0);
                     Actor rabbit = new Rabbit(true, field, location);
                     actors.add(rabbit);
                 }
+
                 /*else if(rand.nextDouble() <= HUNTER_CREATION_PROBABILITY) {
                     Location location = new Location(row, col, 3);
                     Actor hunter = new Hunter(field, location);
                     actors.add(hunter);
                 }*/
+
                 else if(rand.nextDouble() <= GRASS_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col, 0);
+                    Location location = new Location(row, col, 1);
                     Actor grass = new Grass(true, field, location);
                     actors.add(grass);
                 }
+
                 // else leave the location empty.
             }
         }

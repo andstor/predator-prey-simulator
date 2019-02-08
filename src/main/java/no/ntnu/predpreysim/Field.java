@@ -78,7 +78,8 @@ public class Field {
      * @param location Where to place the actor.
      */
     public void place(Actor actor, Location location) {
-        field[location.getRow()][location.getCol()][actor.getLayerValue()] = (Object) actor;
+//        field[location.getRow()][location.getCol()][actor.getLayerValue()] = (Object) actor;
+        field[location.getRow()][location.getCol()][location.getZindex()] = (Object) actor; //TODO this is a problem
     }
 
     /**

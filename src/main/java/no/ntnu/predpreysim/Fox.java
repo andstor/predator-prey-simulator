@@ -119,7 +119,7 @@ public class Fox extends Animal {
     private void incrementHunger() {
         foodLevel--;
         if (foodLevel <= 0) {
-            setDead();
+            this.setDead();
         }
     }
 

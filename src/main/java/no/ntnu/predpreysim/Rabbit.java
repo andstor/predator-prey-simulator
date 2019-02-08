@@ -19,7 +19,7 @@ public class Rabbit extends Animal {
     // The age to which a rabbit can live.
     private static final int MAX_AGE = 40;
     // The likelihood of a rabbit breeding.
-    private static final double BREEDING_PROBABILITY = 0.02;
+    private static final double BREEDING_PROBABILITY = 0.12;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 4;
     // The food value of a single rabbit. In effect, this is the
@@ -56,7 +56,7 @@ public class Rabbit extends Animal {
      */
     public void act(List<Actor> newRabbits) {
         incrementAge();
-//        incrementHunger();
+        incrementHunger();
         if (isAlive()) {
             giveBirth(newRabbits);
             // Move towards a source of food if found.
