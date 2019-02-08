@@ -16,7 +16,4 @@ public class PredPreySim
         sim.runLongSimulation();
 //        System.exit(0);
     }
-
-
-    
 }
