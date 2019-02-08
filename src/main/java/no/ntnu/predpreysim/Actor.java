@@ -22,4 +22,10 @@ public interface Actor
      * @return true if the actor is active, false otherwise.
      */
     abstract public boolean isActive();
+
+    /**
+     * Get the allowed layer level of this actor.
+     * @return int the layer value.
+     */
+    abstract public int getLayerValue();
 }

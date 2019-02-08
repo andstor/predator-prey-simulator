@@ -13,7 +13,9 @@ public abstract class Animal implements Actor
 {
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
-    
+    // The allowed layer location.
+    private int layer = 1;
+
     // Whether the animal is alive or not.
     private boolean alive;
     // The animal's field.
@@ -105,7 +107,12 @@ public abstract class Animal implements Actor
     {
         return isAlive();
     }
-    
+
+    @Override
+    public int getLayerValue() {
+        return this.layer;
+    }
+
     /**
      * Check whether the animal is alive or not.
      * @return true if the animal is still alive.

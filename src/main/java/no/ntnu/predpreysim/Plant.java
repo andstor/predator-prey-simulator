@@ -13,6 +13,8 @@ public abstract class Plant implements Actor
 {
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
+    // The allowed layer location.
+    private int layer = 1;
 
     // Whether the plant is alive or not.
     private boolean alive;
@@ -210,5 +212,10 @@ public abstract class Plant implements Actor
     protected Field getField()
     {
         return field;
+    }
+
+    @Override
+    public int getLayerValue() {
+        return this.layer;
     }
 }

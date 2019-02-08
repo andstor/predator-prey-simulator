@@ -57,20 +57,20 @@ public class GridView extends JFrame implements SimulatorView {
     }
 
     /**
-     * Define a color to be used for a given class of animal.
+     * Define a color to be used for a given class of actor.
      *
-     * @param animalClass The animal's Class object.
+     * @param actorClass The actor's Class object.
      * @param color       The color to be used for the given class.
      */
-    public void setColor(Class animalClass, Color color) {
-        colors.put(animalClass, color);
+    public void setColor(Class actorClass, Color color) {
+        colors.put(actorClass, color);
     }
 
     /**
-     * @return The color to be used for a given class of animal.
+     * @return The color to be used for a given class of actor.
      */
-    private Color getColor(Class animalClass) {
-        Color col = colors.get(animalClass);
+    private Color getColor(Class actorClass) {
+        Color col = colors.get(actorClass);
         if (col == null) {
             // no color defined for this class
             return UNKNOWN_COLOR;
@@ -97,11 +97,16 @@ public class GridView extends JFrame implements SimulatorView {
 
         for (int row = 0; row < field.getHeight(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
-                Object animal = field.getObjectAt(row, col);
-                if (animal != null) {
-                    stats.incrementCount(animal.getClass());
-                    fieldView.drawMark(col, row, getColor(animal.getClass()));
-                } else {
+                boolean cellIsEmpty = true;
+                for (int zindex = 0; zindex < field.getDepth(); zindex++) {
+                    Object actor = field.getObjectAt(row, col, zindex);
+                    if (actor != null) {
+                        cellIsEmpty = false;
+                        stats.incrementCount(actor.getClass());
+                        fieldView.drawMark(col, row, getColor(actor.getClass()));
+                    }
+                }
+                if (cellIsEmpty) {
                     fieldView.drawMark(col, row, EMPTY_COLOR);
                 }
             }

@@ -128,9 +128,11 @@ public class FieldStats {
         reset();
         for (int row = 0; row < field.getHeight(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
-                Object actor = field.getObjectAt(row, col);
-                if (actor != null) {
-                    incrementCount(actor.getClass());
+                for (int zindex = 0; zindex < field.getDepth(); zindex++) {
+                    Object actor = field.getObjectAt(row, col, zindex);
+                    if (actor != null) {
+                        incrementCount(actor.getClass());
+                    }
                 }
             }
         }

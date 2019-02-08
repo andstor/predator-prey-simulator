@@ -18,10 +18,11 @@ public class Location
      * @param row The row.
      * @param col The column.
      */
-    public Location(int row, int col)
+    public Location(int row, int col, int zindex)
     {
         this.row = row;
         this.col = col;
+        this.zindex = zindex;
     }
     
     /**
@@ -31,7 +32,7 @@ public class Location
     {
         if(obj instanceof Location) {
             Location other = (Location) obj;
-            return row == other.getRow() && col == other.getCol();
+            return row == other.getRow() && col == other.getCol() && zindex == other.getZindex();
         }
         else {
             return false;
@@ -39,12 +40,12 @@ public class Location
     }
     
     /**
-     * Return a string of the form row,column
+     * Return a string of the form row,column,zindex
      * @return A string representation of the location.
      */
     public String toString()
     {
-        return row + "," + col;
+        return row + "," + col + "," + zindex;
     }
     
     /**
@@ -55,7 +56,7 @@ public class Location
      */
     public int hashCode()
     {
-        return (row << 16) + (col << 16);
+        return (row << 16) + (col << 16) + zindex;
     }
     
     /**
@@ -72,5 +73,13 @@ public class Location
     public int getCol()
     {
         return col;
+    }
+
+    /**
+     * @return The column.
+     */
+    public int getZindex()
+    {
+        return zindex;
     }
 }

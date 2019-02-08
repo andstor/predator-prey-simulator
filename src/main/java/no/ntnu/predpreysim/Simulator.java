@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import static com.oracle.jrockit.jfr.FlightRecorder.isActive;
+
 /**
  * A simple predator-prey simulator, based on a rectangular field
  * containing rabbits and foxes.
@@ -20,6 +22,8 @@ public class Simulator {
     private static final int DEFAULT_WIDTH = 120;
     // The default height of the grid.
     private static final int DEFAULT_HEIGHT = 80;
+    // The default depth of the grid.
+    private static final int DEFAULT_DEPTH = 2;
     // The probability that a fox will be created in any given grid position.
     private static final double FOX_CREATION_PROBABILITY = 0.02;
     // The probability that a rabbit will be created in any given grid position.
@@ -38,7 +42,7 @@ public class Simulator {
      * Construct a simulation field with default size.
      */
     public Simulator() {
-        this(DEFAULT_HEIGHT, DEFAULT_WIDTH);
+        this(DEFAULT_HEIGHT, DEFAULT_WIDTH, DEFAULT_DEPTH);
     }
 
     /**
@@ -47,16 +51,17 @@ public class Simulator {
      * @param height Height of the field. Must be greater than zero.
      * @param width Width of the field. Must be greater than zero.
      */
-    public Simulator(int height, int width) {
-        if (height <= 0 || width <= 0) {
+    public Simulator(int height, int width, int depth) {
+        if (height <= 0 || width <= 0|| depth <= 0) {
             System.out.println("The dimensions must be greater than zero.");
             System.out.println("Using default values.");
             height = DEFAULT_HEIGHT;
             width = DEFAULT_WIDTH;
+            depth = DEFAULT_DEPTH;
         }
 
         actors = new ArrayList<>();
-        field = new Field(height, width);
+        field = new Field(height, width, depth);
 
         views = new ArrayList<>();
 
@@ -69,13 +74,13 @@ public class Simulator {
         views.add(view);
 
         // The graph view.
-        view = new GraphView(500, 150, 500);
+        /*view = new GraphView(500, 150, 500);
         view.setColor(Rabbit.class, Color.BLACK);
         view.setColor(Fox.class, Color.RED);
-        views.add(view);
+        views.add(view);*/
 
         // The text view.
-        views.add(new TextView());
+//        views.add(new TextView());
 
         // Setup a valid starting point.
         reset();
@@ -121,6 +126,14 @@ public class Simulator {
                 it.remove();
             }
         }
+
+//        actors.removeIf(actor -> !actor.isActive());
+
+        int count = 0;
+        for (int i = 0; i < actors.size(); i++) {
+            if (actors.get(i) == null) count++;
+        }
+        System.out.println(count);
 
         // Add the newly born foxes and rabbits to the main lists.
         actors.addAll(newActor);
