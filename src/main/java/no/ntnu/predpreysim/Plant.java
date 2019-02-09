@@ -1,7 +1,10 @@
 package no.ntnu.predpreysim;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import static java.lang.Math.sqrt;
 
 /**
  * A class representing shared characteristics of plants.
@@ -14,7 +17,7 @@ public abstract class Plant implements Actor
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
     // The allowed layer location.
-    private int layer = 1;
+    private int layer = 0;
 
     // Whether the plant is alive or not.
     private boolean alive;
@@ -152,12 +155,21 @@ public abstract class Plant implements Actor
         // New rabbits are born into adjacent locations.
         // Get a list of adjacent free locations.
         Field field = getField();
-        List<Location> free = field.getFreeAdjacentLocations(getLocation());
+        List<Location> free = field.getFreeAdjacentLocationsOnLayer(getLocation());
         int births = breed();
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
             newborn.add(createPlant(false, field, loc));
         }
+
+//        int x = field.getHeight() - 1;
+//        int y = field.getWidth() - 1;
+//        int z = this.layer;
+//        Location loc2 = new Location(x, y, z);
+//        if (field.getObjectAt(loc2) == null) {
+//            newborn.add(createPlant(false, field, loc2));
+//        }
+
     }
 
     /**

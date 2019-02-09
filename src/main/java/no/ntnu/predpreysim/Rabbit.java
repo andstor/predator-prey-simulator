@@ -19,7 +19,7 @@ public class Rabbit extends Animal {
     // The age to which a rabbit can live.
     private static final int MAX_AGE = 40;
     // The likelihood of a rabbit breeding.
-    private static final double BREEDING_PROBABILITY = 0.12;
+    private static final double BREEDING_PROBABILITY = 0.09;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 4;
     // The food value of a single rabbit. In effect, this is the
@@ -63,10 +63,11 @@ public class Rabbit extends Animal {
             Location newLocation = findFood();
             if (newLocation == null) {
                 // No food found - try to move to a free location.
-                newLocation = getField().freeAdjacentLocation(getLocation());
+                newLocation = getField().freeAdjacentLocationOnLayer(getLocation());
             }
             // See if it was possible to move.
             if (newLocation != null) {
+                newLocation.setZindex(this.getLayerValue());
                 setLocation(newLocation);
             } else {
                 // Overcrowding.
@@ -157,7 +158,4 @@ public class Rabbit extends Animal {
     protected Animal createAnimal(boolean randomAge, Field field, Location location) {
         return new Rabbit(randomAge, field, location);
     }
-
-
-
 }

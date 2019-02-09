@@ -62,8 +62,8 @@ public class Field {
      * be lost.
      *
      * @param actor The actor to be placed.
-     * @param row    Row coordinate of the location.
-     * @param col    Column coordinate of the location.
+     * @param row   Row coordinate of the location.
+     * @param col   Column coordinate of the location.
      */
     public void place(Actor actor, int row, int col, int zindex) {
         place(actor, new Location(row, col, zindex));
@@ -74,7 +74,7 @@ public class Field {
      * If there is already an actor at the location it will
      * be lost.
      *
-     * @param actor   The actor to be placed.
+     * @param actor    The actor to be placed.
      * @param location Where to place the actor.
      */
     public void place(Actor actor, Location location) {
@@ -135,6 +135,40 @@ public class Field {
     }
 
     /**
+     * Get a shuffled list of the free adjacent locations, on the existing layer (zindex).
+     *
+     * @param location Get locations adjacent to this.
+     * @return A list of free adjacent locations.
+     */
+    public List<Location> getFreeAdjacentLocationsOnLayer(Location location) {
+        List<Location> free = new LinkedList<>();
+        List<Location> adjacent = adjacentLocationsOnLayer(location);
+        for (Location next : adjacent) {
+            if (getObjectAt(next) == null) {
+                free.add(next);
+            }
+        }
+        return free;
+    }
+
+    /**
+     * Get a shuffled list of the free adjacent locations, on the existing layer (zindex).
+     *
+     * @param location Get locations adjacent to this.
+     * @return A list of free adjacent locations.
+     */
+    public List<Location> getFreeAdjacentLocationsOnLayerWithDistance(Location location, int distance) {
+        List<Location> free = new LinkedList<>();
+        List<Location> adjacent = adjacentLocationsOnLayerByDistance(location, distance);
+        for (Location next : adjacent) {
+            if (getObjectAt(next) == null) {
+                free.add(next);
+            }
+        }
+        return free;
+    }
+
+    /**
      * Try to find a free location that is adjacent to the
      * given location. If there is none, return null.
      * The returned location will be within the valid bounds
@@ -146,6 +180,25 @@ public class Field {
     public Location freeAdjacentLocation(Location location) {
         // The available free ones.
         List<Location> free = getFreeAdjacentLocations(location);
+        if (free.size() > 0) {
+            return free.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Try to find a free location that is adjacent to the
+     * given location, on the existing layer (zindex). If there is none, return null.
+     * The returned location will be within the valid bounds
+     * of the field.
+     *
+     * @param location The location from which to generate an adjacency.
+     * @return A valid location within the grid area.
+     */
+    public Location freeAdjacentLocationOnLayer(Location location) {
+        // The available free ones.
+        List<Location> free = getFreeAdjacentLocationsOnLayer(location);
         if (free.size() > 0) {
             return free.get(0);
         } else {
@@ -199,12 +252,97 @@ public class Field {
     }
 
     /**
+     * Return a shuffled list of locations on the existing layer (zindex), adjacent to the given one.
+     * The list will not include the location itself.
+     * All locations will lie within the grid.
+     *
+     * @param location The location from which to generate adjacencies.
+     * @return A list of locations adjacent to that given.
+     */
+    public List<Location> adjacentLocationsOnLayer(Location location) {
+        assert location != null : "Null location passed to adjacentLocations";
+        // The list of locations to be returned.
+        List<Location> locations = new LinkedList<>();
+        if (location != null) {
+            int row = location.getRow();
+            int col = location.getCol();
+            int zindex = location.getZindex();
+
+            for (int roffset = -1; roffset <= 1; roffset++) {
+                int nextRow = row + roffset;
+                if (nextRow >= 0 && nextRow < height) {
+
+
+                    for (int coffset = -1; coffset <= 1; coffset++) {
+                        int nextCol = col + coffset;
+                        // Exclude invalid locations and the original location.
+                        if (nextCol >= 0 && nextCol < width && (roffset != 0 || coffset != 0)) {
+
+                            locations.add(new Location(nextRow, nextCol, zindex));
+                        }
+                    }
+                }
+            }
+
+            // Shuffle the list. Several other methods rely on the list
+            // being in a random order.
+            Collections.shuffle(locations, rand);
+        }
+        return locations;
+    }
+
+    /**
+     * Return a shuffled list of locations on the existing layer (zindex), adjacent to the given one.
+     * The list will not include the location itself.
+     * All locations will lie within the grid.
+     *
+     * @param location The location from which to generate adjacencies.
+     * @return A list of locations adjacent to that given.
+     */
+    public List<Location> adjacentLocationsOnLayerByDistance(Location location, int distance) {
+        assert location != null : "Null location passed to adjacentLocations";
+        // The list of locations to be returned.
+        List<Location> locations = new LinkedList<>();
+        if (location != null) {
+            int row = location.getRow();
+            int col = location.getCol();
+            int zindex = location.getZindex();
+
+            for (int roffset = (-distance - 1); roffset <= (distance + 1); roffset++) {
+                int nextRow = row + roffset;
+                if (nextRow >= 0 && nextRow < height) {
+
+
+                    for (int coffset = (-distance - 1); coffset <= (distance + 1); coffset++) {
+                        int nextCol = col + coffset;
+                        // Exclude invalid locations and the original location.
+                        if (nextCol >= 0 && nextCol < width
+                                && ((roffset >= -distance && roffset <= distance) || ((coffset >= -distance && coffset <= distance)))) {
+
+                            locations.add(new Location(nextRow, nextCol, zindex));
+                        }
+                    }
+                }
+            }
+
+            // Shuffle the list. Several other methods rely on the list
+            // being in a random order.
+            Collections.shuffle(locations, rand);
+        }
+        return locations;
+    }
+
+    /**
      * Return the height of the field.
      *
      * @return The heighth of the field.
      */
     public int getHeight() {
         return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     /**
@@ -216,6 +354,10 @@ public class Field {
         return width;
     }
 
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
     /**
      * Return the depth of the field.
      *
@@ -223,5 +365,9 @@ public class Field {
      */
     public int getDepth() {
         return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 }

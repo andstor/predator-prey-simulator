@@ -7,13 +7,13 @@ public class Grass extends Plant {
     // Characteristics shared by all grasss (class variables).
 
     // The age at which a grass can start to breed.
-    private static final int BREEDING_AGE = 5;
+    private static final int BREEDING_AGE = 2;
     // The age to which a grass can live.
-    private static final int MAX_AGE = 40;
+    private static final int MAX_AGE = 100;
     // The likelihood of a grass breeding.
-    private static final double BREEDING_PROBABILITY = 0.07;
+    private static final double BREEDING_PROBABILITY = 0.9;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 1;
+    private static final int MAX_LITTER_SIZE = 50;
 
     // Individual characteristics (instance fields).
 

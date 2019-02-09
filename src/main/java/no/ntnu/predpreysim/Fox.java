@@ -14,6 +14,8 @@ import java.util.Random;
 public class Fox extends Animal {
     // Characteristics shared by all foxes (class variables).
 
+    private int layer = 2;
+
     // The age at which a fox can start to breed.
     private static final int BREEDING_AGE = 15;
     // The age to which a fox can live.
@@ -27,6 +29,7 @@ public class Fox extends Animal {
     private static final int RABBIT_FOOD_VALUE = 9;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
+
 
     // Individual characteristics (instance fields).
     // The fox's food level, which is increased by eating rabbits.
@@ -65,10 +68,11 @@ public class Fox extends Animal {
             Location newLocation = findFood();
             if (newLocation == null) {
                 // No food found - try to move to a free location.
-                newLocation = getField().freeAdjacentLocation(getLocation());
+                newLocation = getField().freeAdjacentLocationOnLayer(getLocation());
             }
             // See if it was possible to move.
             if (newLocation != null) {
+                newLocation.setZindex(this.getLayerValue());
                 setLocation(newLocation);
             } else {
                 // Overcrowding.
@@ -93,6 +97,11 @@ public class Fox extends Animal {
      */
     public int getBreedingAge() {
         return BREEDING_AGE;
+    }
+
+    @Override
+    public int getLayerValue() {
+        return this.layer;
     }
 
     /**

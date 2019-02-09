@@ -23,7 +23,7 @@ public class Simulator {
     // The default height of the grid.
     private static final int DEFAULT_HEIGHT = 80;
     // The default depth of the grid.
-    private static final int DEFAULT_DEPTH = 2;
+    private static final int DEFAULT_DEPTH = 3;
     // The probability that a fox will be created in any given grid position.
     private static final double FOX_CREATION_PROBABILITY = 0.02;
     // The probability that a rabbit will be created in any given grid position.
