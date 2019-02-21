@@ -15,10 +15,6 @@ public class PredPreySim {
         Simulator sim = new Simulator();
         sim.runLongSimulation();
 //        System.exit(0);
-
-//        Field field = new Field(20, 20, 2);
-//        List<Location> location = field.adjacentLocationsInRadius(new Location(10, 10, 1), 2);
-//        System.out.println(location);
     }
 
 }
