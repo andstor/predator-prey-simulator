@@ -5,4 +5,4 @@ rectangular field, with actors located on multiple layers. A visual representati
 2D view of the field.
 
 ## Credits
-The original project, foxes-and-rabbits-graph, was written by Michael Kölling and David J. Barnes.
+The original project, foxes-and-rabbits, was written by Michael Kölling and David J. Barnes.
