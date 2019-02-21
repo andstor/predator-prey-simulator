@@ -33,6 +33,8 @@ public class Simulator {
     // A graphical view of the simulation.
     private List<SimulatorView> views;
 
+    private Logger logger;
+
     /**
      * Construct a simulation field with default size.
      */
@@ -77,6 +79,9 @@ public class Simulator {
 
         // Setup a valid starting point.
         reset();
+
+        //Create a logger
+        logger = new Logger();
     }
 
     /**
@@ -97,8 +102,9 @@ public class Simulator {
         for (int step = 1; step <= numSteps && views.get(0).isViable(field); step++) {
             simulateOneStep();
             // Uncomment to run slow simulation.
-            wait(100);
+            //wait(100);
         }
+        logger.endLogging();
     }
 
     /**
@@ -124,6 +130,7 @@ public class Simulator {
         actors.addAll(newActor);
 
         updateViews();
+        logger.log(step, newActor, field);
     }
 
     /**
