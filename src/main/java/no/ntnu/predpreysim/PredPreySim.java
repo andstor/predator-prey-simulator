@@ -1,5 +1,7 @@
 package no.ntnu.predpreysim;
 
+import java.util.List;
+
 /**
  * @author asty
  */
@@ -14,14 +16,9 @@ public class PredPreySim {
         sim.runLongSimulation();
 //        System.exit(0);
 
+//        Field field = new Field(20, 20, 2);
+//        List<Location> location = field.adjacentLocationsInRadius(new Location(10, 10, 1), 2);
+//        System.out.println(location);
     }
 
-    public static float invSqrt(float x) {
-        float xhalf = 0.5f * x;
-        int i = Float.floatToIntBits(x);
-        i = 0x5f3759df - (i >> 1);
-        x = Float.intBitsToFloat(i);
-        x *= (1.5f - xhalf * x * x);
-        return x;
-    }
 }

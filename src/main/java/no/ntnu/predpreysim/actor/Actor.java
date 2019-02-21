@@ -1,4 +1,4 @@
-package no.ntnu.predpreysim;
+package no.ntnu.predpreysim.actor;
 
 import java.util.List;
 

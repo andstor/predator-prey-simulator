@@ -1,13 +1,12 @@
 package no.ntnu.predpreysim;
 
+import no.ntnu.predpreysim.actor.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
-
-import static com.oracle.jrockit.jfr.FlightRecorder.isActive;
 
 /**
  * A simple predator-prey simulator, based on a rectangular field
@@ -24,10 +23,6 @@ public class Simulator {
     private static final int DEFAULT_HEIGHT = 80;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 3;
-    // The probability that a fox will be created in any given grid position.
-    private static final double FOX_CREATION_PROBABILITY = 0.02;
-    // The probability that a rabbit will be created in any given grid position.
-    private static final double RABBIT_CREATION_PROBABILITY = 0.08;
 
     // List of actors in the field.
     private List<Actor> actors;
@@ -69,8 +64,6 @@ public class Simulator {
 
         // The grid view.
         SimulatorView view = new GridView(height, width);
-        view.setColor(Rabbit.class, Color.ORANGE);
-        view.setColor(Fox.class, Color.BLUE);
         views.add(view);
 
         // The graph view.

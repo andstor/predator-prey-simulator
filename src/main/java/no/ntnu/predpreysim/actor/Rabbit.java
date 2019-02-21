@@ -1,4 +1,8 @@
-package no.ntnu.predpreysim;
+package no.ntnu.predpreysim.actor;
+
+import no.ntnu.predpreysim.Field;
+import no.ntnu.predpreysim.Location;
+import no.ntnu.predpreysim.Randomizer;
 
 import java.util.Iterator;
 import java.util.List;
@@ -19,17 +23,19 @@ public class Rabbit extends Animal {
     // The age to which a rabbit can live.
     private static final int MAX_AGE = 40;
     // The likelihood of a rabbit breeding.
-    private static final double BREEDING_PROBABILITY = 0.09;
+    private static final double BREEDING_PROBABILITY = 0.10;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 4;
+    // The food factor for a rabbit.
+    private static final int FOOD_FACTOR = 1;
     // The food value of a single rabbit. In effect, this is the
     // number of steps a fox can go before it has to eat again.
-    private static final int GRASS_FOOD_VALUE = 3;
+    private static final int FOOD_VALUE = 7;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
+    private static final int MAX_FOOD_VALUE = 3;
     // Individual characteristics (instance fields).
     // The fox's food level, which is increased by eating rabbits.
-    private int foodLevel;
 
     /**
      * Create a new rabbit. A rabbit may be created with age
@@ -41,11 +47,6 @@ public class Rabbit extends Animal {
      */
     public Rabbit(boolean randomAge, Field field, Location location) {
         super(randomAge, field, location);
-        if (randomAge) {
-            foodLevel = rand.nextInt(GRASS_FOOD_VALUE);
-        } else {
-            foodLevel = GRASS_FOOD_VALUE;
-        }
     }
 
     /**
@@ -60,8 +61,16 @@ public class Rabbit extends Animal {
         if (isAlive()) {
             giveBirth(newRabbits);
             // Move towards a source of food if found.
-            Location newLocation = findFood();
-            if (newLocation == null) {
+
+            Location foodLocation = findFood();
+            Location newLocation;
+
+            if (foodLocation != null) {
+                Edible edible = (Edible) getField().getObjectAt(foodLocation);
+                eat(edible);
+
+                newLocation = foodLocation;
+            } else {
                 // No food found - try to move to a free location.
                 newLocation = getField().freeAdjacentLocationOnLayer(getLocation());
             }
@@ -74,6 +83,7 @@ public class Rabbit extends Animal {
                 setDead();
             }
         }
+
     }
 
     /**
@@ -83,6 +93,11 @@ public class Rabbit extends Animal {
      */
     public int getMaxAge() {
         return MAX_AGE;
+    }
+
+    @Override
+    public int getMaxFoodValue() {
+        return MAX_FOOD_VALUE;
     }
 
     /**
@@ -112,14 +127,18 @@ public class Rabbit extends Animal {
         return MAX_LITTER_SIZE;
     }
 
-    /**
-     * Make this rabbit more hungry. This could result in the fox's death.
-     */
-    private void incrementHunger() {
-        foodLevel--;
-        if (foodLevel <= 0) {
-            setDead();
-        }
+
+    public int getFoodFactor() {
+        return FOOD_FACTOR;
+    }
+
+    public int getFoodValue() {
+        return FOOD_VALUE;
+    }
+
+    @Override
+    public void getEaten() {
+        setDead();
     }
 
     /**
@@ -135,11 +154,9 @@ public class Rabbit extends Animal {
         while (it.hasNext()) {
             Location where = it.next();
             Object actor = field.getObjectAt(where);
-            if (actor instanceof Grass) {
-                Grass grass = (Grass) actor;
-                if (grass.isAlive()) {
-                    grass.setDead();
-                    foodLevel = GRASS_FOOD_VALUE;
+            if (actor instanceof Grass || actor instanceof Flower) {
+                Organism organism = (Organism) actor;
+                if (organism.isAlive()) {
                     return where;
                 }
             }
@@ -155,7 +172,7 @@ public class Rabbit extends Animal {
      * @param field     The field currently occupied.
      * @param location  The location within the field.
      */
-    protected Animal createAnimal(boolean randomAge, Field field, Location location) {
+    protected Animal createOrganism(boolean randomAge, Field field, Location location) {
         return new Rabbit(randomAge, field, location);
     }
 }

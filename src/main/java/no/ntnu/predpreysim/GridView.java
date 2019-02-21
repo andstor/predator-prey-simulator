@@ -60,7 +60,7 @@ public class GridView extends JFrame implements SimulatorView {
      * Define a color to be used for a given class of actor.
      *
      * @param actorClass The actor's Class object.
-     * @param color       The color to be used for the given class.
+     * @param color      The color to be used for the given class.
      */
     public void setColor(Class actorClass, Color color) {
         colors.put(actorClass, color);

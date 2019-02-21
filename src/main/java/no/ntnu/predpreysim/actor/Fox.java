@@ -1,4 +1,9 @@
-package no.ntnu.predpreysim;
+package no.ntnu.predpreysim.actor;
+
+import no.ntnu.predpreysim.ExponentialGenerator;
+import no.ntnu.predpreysim.Field;
+import no.ntnu.predpreysim.Location;
+import no.ntnu.predpreysim.Randomizer;
 
 import java.util.Iterator;
 import java.util.List;
@@ -14,26 +19,27 @@ import java.util.Random;
 public class Fox extends Animal {
     // Characteristics shared by all foxes (class variables).
 
-    private int layer = 2;
-
     // The age at which a fox can start to breed.
     private static final int BREEDING_AGE = 15;
     // The age to which a fox can live.
-    private static final int MAX_AGE = 150;
+    private static final int MAX_AGE = 100;
     // The likelihood of a fox breeding.
-    private static final double BREEDING_PROBABILITY = 0.08;
+    private static final double BREEDING_PROBABILITY = 0.06;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 2;
-    // The food value of a single rabbit. In effect, this is the
-    // number of steps a fox can go before it has to eat again.
-    private static final int RABBIT_FOOD_VALUE = 9;
+    // The food factor for a fox.
+    private static final int FOOD_FACTOR = 1;
+    // The food value of a single fox.
+    private static final int FOOD_VALUE = 15;
+    // The max amount of food a single fox can have.
+    private static final int MAX_FOOD_VALUE = 16;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
+    private static final ExponentialGenerator expRand = new ExponentialGenerator(0.4, rand);
 
-
+    // The allowed layer location.
+    private int layer = 2;
     // Individual characteristics (instance fields).
-    // The fox's food level, which is increased by eating rabbits.
-    private int foodLevel;
 
     /**
      * Create a fox. A fox can be created as a new born (age zero
@@ -45,11 +51,6 @@ public class Fox extends Animal {
      */
     public Fox(boolean randomAge, Field field, Location location) {
         super(randomAge, field, location);
-        if (randomAge) {
-            foodLevel = rand.nextInt(RABBIT_FOOD_VALUE);
-        } else {
-            foodLevel = RABBIT_FOOD_VALUE;
-        }
     }
 
     /**
@@ -64,13 +65,32 @@ public class Fox extends Animal {
         incrementHunger();
         if (isAlive()) {
             giveBirth(newFoxes);
-            // Move towards a source of food if found.
-            Location newLocation = findFood();
-            if (newLocation == null) {
+
+            Location foodLocation = findFood();
+            Location newLocation;
+
+            if (foodLocation != null) {
+                Edible edible = (Edible) getField().getObjectAt(foodLocation);
+                eat(edible);
+
+                if (edible instanceof Organism) {
+                    Organism organism = (Organism) edible;
+                    organism.setDead();
+                }
+                newLocation = foodLocation;
+
+            } else {
+
+                // Search for direction of prey -->
+//                int distance = expRand.nextInt();
+//                List<Location> adjacent2 = field.adjacentLocationsByDistance(getLocation(), distance);
+
+
                 // No food found - try to move to a free location.
                 newLocation = getField().freeAdjacentLocationOnLayer(getLocation());
             }
-            // See if it was possible to move.
+
+            // Move towards a source of food if found.
             if (newLocation != null) {
                 newLocation.setZindex(this.getLayerValue());
                 setLocation(newLocation);
@@ -90,6 +110,11 @@ public class Fox extends Animal {
         return MAX_AGE;
     }
 
+    @Override
+    public int getMaxFoodValue() {
+        return MAX_FOOD_VALUE;
+    }
+
     /**
      * Return the breeding age for a fox.
      *
@@ -99,10 +124,6 @@ public class Fox extends Animal {
         return BREEDING_AGE;
     }
 
-    @Override
-    public int getLayerValue() {
-        return this.layer;
-    }
 
     /**
      * Return the breeding probability for a fox.
@@ -122,14 +143,18 @@ public class Fox extends Animal {
         return MAX_LITTER_SIZE;
     }
 
-    /**
-     * Make this fox more hungry. This could result in the fox's death.
-     */
-    private void incrementHunger() {
-        foodLevel--;
-        if (foodLevel <= 0) {
-            this.setDead();
-        }
+    public int getFoodFactor() {
+        return FOOD_FACTOR;
+    }
+
+
+    public int getFoodValue() {
+        return FOOD_VALUE;
+    }
+
+    @Override
+    public void getEaten() {
+        this.setDead();
     }
 
     /**
@@ -140,21 +165,25 @@ public class Fox extends Animal {
      */
     private Location findFood() {
         Field field = getField();
+
+        boolean foundPrey = false;
+        Location preyLocation = null;
+
         List<Location> adjacent = field.adjacentLocations(getLocation());
         Iterator<Location> it = adjacent.iterator();
-        while (it.hasNext()) {
+        while (it.hasNext() && !foundPrey) {
             Location where = it.next();
             Object animal = field.getObjectAt(where);
             if (animal instanceof Rabbit) {
                 Rabbit rabbit = (Rabbit) animal;
                 if (rabbit.isAlive()) {
-                    rabbit.setDead();
-                    foodLevel = RABBIT_FOOD_VALUE;
-                    return where;
+                    foundPrey = true;
+                    preyLocation = where;
                 }
             }
         }
-        return null;
+
+        return preyLocation;
     }
 
     /**
@@ -165,8 +194,14 @@ public class Fox extends Animal {
      * @param field     The field currently occupied.
      * @param location  The location within the field.
      */
-    protected Animal createAnimal(boolean randomAge, Field field, Location location) {
+    @Override
+    protected Animal createOrganism(boolean randomAge, Field field, Location location) {
         return new Fox(randomAge, field, location);
+    }
+
+    @Override
+    public int getLayerValue() {
+        return this.layer;
     }
 
 }
