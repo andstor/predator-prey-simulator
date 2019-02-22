@@ -104,7 +104,6 @@ public class Simulator {
             // Uncomment to run slow simulation.
             //wait(100);
         }
-        logger.endLogging();
     }
 
     /**

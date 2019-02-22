@@ -17,15 +17,14 @@ import java.util.HashMap;
  * 0. add the classes to be logged to the fillClasses() method
  * 1. create a new Logger()
  * 2. for each step invoke Logger.logg()
- * 3. when logging is done invoke Logger.endLogging()
  *
  */
 public class Logger {
-    private PrintWriter pw;
     private StringBuilder builder;
     private ArrayList<Class> classes;
     private HashMap<Class, Integer> lastPopulationCount;
     private FieldStats fs;
+    private File file;
 
 
     /**
@@ -35,15 +34,12 @@ public class Logger {
         classes = new ArrayList<>();
         fillClasses();
 
+        file = new File("stats.csv");
+
         lastPopulationCount = new HashMap<>();
         resetLastPopulationCount();
 
-        try {
-            pw = new PrintWriter(new File("stats.csv"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        
+
         builder = new StringBuilder();
         initCsvFile();
 
@@ -63,7 +59,7 @@ public class Logger {
     /**
      * Creates the last population count map and fills it with zeros for each key.
      */
-    public void resetLastPopulationCount(){
+    private void resetLastPopulationCount(){
         for(Class c : classes){
             lastPopulationCount.put(c, 0);
         }
@@ -76,28 +72,37 @@ public class Logger {
      * @param field field where living actors is located
      */
     public void log(int step, Collection<Actor> newBorn, Field field){
+
+
         fs.reset();
         builder.append("" + step);
         for(Class c  : classes){
             int populationCount = fs.getPopulationCount(field, c);
-            builder.append("," + populationCount);
+            builder.append(",").append(populationCount);
             int newBornCount = geNewBornCount(newBorn, c);
-            builder.append("," + newBornCount);
+            builder.append(",").append(newBornCount);
             int deadCount = getDeadCount(populationCount, newBornCount, c);
-            builder.append("," + deadCount);
+            builder.append(",").append(deadCount);
             lastPopulationCount.put(c, populationCount);
         }
         builder.append("\n");
+        writeToFile(builder);
     }
 
     /**
-     * Ends the logging and writes all the date to the csv file.
+     * Write to file
      */
-    public void endLogging(){
-        pw.write(builder.toString());
-        pw.close();
-    }
+    private void writeToFile(StringBuilder builder){
+        try {
+            PrintWriter pw = new PrintWriter(file);
+            pw.write(builder.toString());
+            pw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
+
+    }
 
     /**
      * Initializes the csv file with a header telling which data that will be stored
@@ -107,11 +112,12 @@ public class Logger {
         for(Class c : classes){
             String[] longName = c.getName().split("\\.");
             String name = longName[longName.length - 1];
-            builder.append("," + name);
-            builder.append(",NewBorn" + name);
-            builder.append(",Dead" + name);
+            builder.append(",").append(name);
+            builder.append(",NewBorn").append(name);
+            builder.append(",Dead").append(name);
         }
         builder.append("\n");
+        writeToFile(builder);
     }
 
     /**
@@ -134,7 +140,7 @@ public class Logger {
      * Calculates the number of dead actors of a particular class
      */
     private int getDeadCount(int allive, int newBorn, Class c){
-        int deadCount = 0;
+        int deadCount;
         deadCount = lastPopulationCount.get(c) + newBorn - allive;
         return deadCount;
     }
