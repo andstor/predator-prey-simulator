@@ -129,7 +129,7 @@ public class Simulator {
         actors.addAll(newActor);
 
         updateViews();
-        logger.log(step, newActor, field);
+        logger.log(step, field);
     }
 
     /**
