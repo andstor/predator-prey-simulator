@@ -35,6 +35,8 @@ public class Simulator {
 
     private Logger logger;
 
+    private IndividualLogger individualLogger;
+
     /**
      * Construct a simulation field with default size.
      */
@@ -68,11 +70,12 @@ public class Simulator {
         SimulatorView view = new GridView(height, width);
         views.add(view);
 
-        // The graph view.
-        /*view = new GraphView(500, 150, 500);
+        //The graph view.
+
+        view = new GraphView(500, 150, 500);
         view.setColor(Rabbit.class, Color.BLACK);
         view.setColor(Fox.class, Color.RED);
-        views.add(view);*/
+        views.add(view);
 
         // The text view.
 //        views.add(new TextView());
@@ -82,6 +85,7 @@ public class Simulator {
 
         //Create a logger
         logger = new Logger();
+        individualLogger = new IndividualLogger();
     }
 
     /**
@@ -122,14 +126,16 @@ public class Simulator {
             actor.act(newActor);
             if (!actor.isActive()) {
                 it.remove();
+              // individualLogger.setDead(actor, step);
             }
         }
 
         // Add the newly born foxes and rabbits to the main lists.
         actors.addAll(newActor);
+        individualLogger.addNewActors(newActor, step);
+        logger.log(step, field);
 
         updateViews();
-        logger.log(step, field);
     }
 
     /**

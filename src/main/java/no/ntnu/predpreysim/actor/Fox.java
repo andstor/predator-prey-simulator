@@ -24,7 +24,7 @@ public class Fox extends Animal {
     // The age to which a fox can live.
     private static final int MAX_AGE = 100;
     // The likelihood of a fox breeding.
-    private static final double BREEDING_PROBABILITY = 0.06;
+    private static final double BREEDING_PROBABILITY = 0.07777;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 2;
     // The food factor for a fox.
@@ -32,7 +32,7 @@ public class Fox extends Animal {
     // The food value of a single fox.
     private static final int FOOD_VALUE = 15;
     // The max amount of food a single fox can have.
-    private static final int MAX_FOOD_VALUE = 16;
+    private static final int MAX_FOOD_VALUE = 19;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
     private static final ExponentialGenerator expRand = new ExponentialGenerator(0.4, rand);
